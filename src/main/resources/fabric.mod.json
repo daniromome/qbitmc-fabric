@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "qbitmc",
+  "version": "${version}",
+  "name": "qbitmc",
+  "description": "Mod for qbitmc SMP",
+  "authors": [
+    "daniromo"
+  ],
+  "contact": {
+    "website": "qbitmc.daniromo.me",
+    "repo": "https://github.com/daniromo/qbitmc"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/qbitmc/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "client": [
+      "me.daniromo.qbitmc.client.QbitmcClient"
+    ],
+    "main": [
+      "me.daniromo.qbitmc.Qbitmc"
+    ]
+  },
+  "mixins": [
+    "qbitmc.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
