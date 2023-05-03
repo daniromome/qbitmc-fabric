@@ -1,19 +1,29 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE IF NOT EXISTS public.players (
+	id uuid NOT NULL,
+	ign text NULL,
+	last_joined timestamptz NULL,
+	CONSTRAINT players_pk PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS public."statistics" (
 	id uuid NOT NULL DEFAULT uuid_generate_v4(),
 	player uuid NOT NULL,
 	"type" text NOT NULL,
 	"name" text NOT NULL,
 	value int8 NOT NULL,
-	"timestamp" timestamp NOT NULL,
+	"timestamp" timestamptz NOT NULL,
 	CONSTRAINT statistics_pk PRIMARY KEY (id),
-	CONSTRAINT statistics_un UNIQUE (player, type, name)
+	CONSTRAINT statistics_un UNIQUE (player, type, name),
+	CONSTRAINT statistics_fk FOREIGN KEY (player) REFERENCES public.players(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS public.statistics_history (
 	id uuid NOT NULL DEFAULT uuid_generate_v4(),
 	stat uuid NOT NULL,
 	value int8 NOT NULL,
-	"timestamp" timestamp NOT NULL,
+	"timestamp" timestamptz NOT NULL,
 	CONSTRAINT statistics_history_pk PRIMARY KEY (id),
 	CONSTRAINT statistics_history_fk FOREIGN KEY (stat) REFERENCES public."statistics"(id) ON DELETE CASCADE
 );
@@ -29,8 +39,10 @@ AS $$
 DECLARE
     v_stat_id uuid;
     v_prev_value int8;
-    v_prev_timestamp timestamp;
+    v_prev_timestamp timestamptz;
 BEGIN
+    INSERT INTO public.players (id, ign, last_joined) VALUES (p_player, NULL, NULL) ON CONFLICT (id) DO NOTHING;
+
     -- Check if a matching row already exists
     SELECT id, value, timestamp
     INTO v_stat_id, v_prev_value, v_prev_timestamp
