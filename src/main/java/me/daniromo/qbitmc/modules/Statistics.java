@@ -26,7 +26,7 @@ public class Statistics {
         initializeTables();
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         File statsDir = server.getSavePath(WorldSavePath.STATS).toFile();
-        scheduler.scheduleAtFixedRate(() -> syncStatistics(statsDir), 0, 5, TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(() -> syncStatistics(statsDir), 0, Config.STATS_SYNC_INTERVAL, TimeUnit.MINUTES);
     }
 
     public void registerPlayer(UUID id, String ign) {

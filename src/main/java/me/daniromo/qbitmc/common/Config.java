@@ -15,6 +15,8 @@ public class Config {
     public static final String DATABASE_USER;
     public static final String DATABASE_PASSWORD;
 
+    public static final int STATS_SYNC_INTERVAL;
+
     static {
         final Properties props = new Properties();
         final Path path = FabricLoader.getInstance().getConfigDir().resolve("qbitmc.properties");
@@ -28,6 +30,7 @@ public class Config {
         DATABASE_URL = props.getProperty("db.url");
         DATABASE_USER = props.getProperty("db.user");
         DATABASE_PASSWORD = props.getProperty("db.password");
+        STATS_SYNC_INTERVAL = Integer.parseInt(props.getProperty("stats.sync-interval", "5"));
     }
 
     public static void init() {}
