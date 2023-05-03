@@ -29,6 +29,17 @@ public class Statistics {
         scheduler.scheduleAtFixedRate(() -> syncStatistics(statsDir), 0, 5, TimeUnit.MINUTES);
     }
 
+    public void registerPlayer(UUID id, String ign) {
+        try (Connection conn = DriverManager.getConnection(Config.DATABASE_URL, Config.DATABASE_USER, Config.DATABASE_PASSWORD);
+             PreparedStatement query = conn.prepareCall("INSERT INTO public.players (id, ign, last_joined) VALUES (?, ?, NOW()) ON CONFLICT (id) DO UPDATE SET ign = EXCLUDED.ign, last_joined = NOW()")) {
+            query.setObject(1, id);
+            query.setString(2, ign);
+            query.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initializeTables() {
         try (Connection conn = DriverManager.getConnection(Config.DATABASE_URL, Config.DATABASE_USER, Config.DATABASE_PASSWORD);
              Statement query = conn.createStatement()) {
